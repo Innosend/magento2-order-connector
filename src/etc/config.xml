@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright (c) Falcon Media (info@falconmedia.nl)
+ *
+ * @author Falcon Media
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <innosend>
+            <order>
+                <enabled>1</enabled>
+                <auto_sync>1</auto_sync>
+                <sync_on_place>1</sync_on_place>
+                <retry_failed>1</retry_failed>
+                <retry_attempts>3</retry_attempts>
+                <status_sync_enabled>1</status_sync_enabled>
+                <status_sync_interval>60</status_sync_interval>
+            </order>
+        </innosend>
+    </default>
+</config>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

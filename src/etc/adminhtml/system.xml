@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright (c) Falcon Media (info@falconmedia.nl)
+ *
+ * @author Falcon Media
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="innosend" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Innosend</label>
+            <tab>innosend</tab>
+            <resource>Innosend_OrderConnector::config</resource>
+            <group id="order" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Order Synchronization</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Order Sync</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable automatic order synchronization with Innosend</comment>
+                </field>
+                <field id="auto_sync" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Automatic Sync</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Automatically sync orders when placed</comment>
+                </field>
+                <field id="sync_on_place" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync on Order Place</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Sync order immediately when order is placed</comment>
+                </field>
+                <field id="retry_failed" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Retry Failed Syncs</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable retry mechanism for failed order synchronizations</comment>
+                </field>
+                <field id="retry_attempts" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Retry Attempts</label>
+                    <comment>Maximum number of retry attempts for failed syncs</comment>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                </field>
+                <field id="status_sync_enabled" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Status Sync</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable automatic status and tracking sync from Innosend</comment>
+                </field>
+                <field id="status_sync_interval" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status Sync Interval (minutes)</label>
+                    <comment>Interval in minutes for checking status updates</comment>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

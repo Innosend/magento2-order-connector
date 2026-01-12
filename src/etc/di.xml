@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright (c) Falcon Media (info@falconmedia.nl)
+ *
+ * @author Falcon Media
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- OrderMapper: ShippingInformation is optional (null default) -->
+    <!-- It will be injected by Innosend_PickupPoints module di.xml if that module is enabled -->
+    <!-- No need to configure it here - the null default in constructor will be used -->
+
+    <!-- CLI Commands -->
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="innosend_test_order_mapper" xsi:type="object">Innosend\OrderConnector\Console\Command\TestOrderMapper</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
