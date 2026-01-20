@@ -11,6 +11,14 @@
     <!-- It will be injected by Innosend_PickupPoints module di.xml if that module is enabled -->
     <!-- No need to configure it here - the null default in constructor will be used -->
 
+    <!-- Load pickup point extension attributes for REST API -->
+    <!-- Dependencies (pickupPointFactory, shippingInformation) are optional and will be injected by Innosend_PickupPoints module if available -->
+    <type name="Magento\Sales\Model\OrderRepository">
+        <plugin name="innosend_order_connector_load_pickup_point_extension_attributes"
+                type="Innosend\OrderConnector\Plugin\Sales\OrderRepositoryPlugin"
+                sortOrder="10"/>
+    </type>
+
     <!-- CLI Commands -->
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
