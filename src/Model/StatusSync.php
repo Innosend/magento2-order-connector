@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Innosend\OrderConnector\Model;
 
-use Innosend\Base\Api\ClientInterface;
+use Innosend\Integration\Api\ClientInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Psr\Log\LoggerInterface;

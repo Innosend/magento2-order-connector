@@ -32,7 +32,7 @@ php bin/magento cache:flush
 
 - Magento 2.4.x
 - PHP 7.3 - 8.3
-- Innosend_Base module
+- Innosend_Integration module
 
 ## Support
 

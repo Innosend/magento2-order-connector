@@ -1,12 +1,12 @@
 # Innosend Order Connector Module - Support
 
-Zie Base module support documentatie voor support opties.
+Zie Integration module support documentatie voor support opties.
 
 ## Veelvoorkomende Problemen
 
 ### Orders Worden Niet Gesynchroniseerd
 
-1. Verifieer Base module API-configuratie
+1. Verifieer Integration module API-configuratie
 2. Controleer "Enable Order Sync" instelling
 3. Verifieer dat cron draait
 4. Controleer system logs
