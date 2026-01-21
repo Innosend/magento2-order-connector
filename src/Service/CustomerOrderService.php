@@ -231,6 +231,28 @@ class CustomerOrderService
     }
 
     /**
+     * Get pickup point data from extension attributes in API response
+     *
+     * @param array $orderData
+     * @return array|null
+     */
+    private function getPickupPointFromExtensionAttributes(array $orderData): ?array
+    {
+        // Check if extension attributes contain pickup point data
+        if (isset($orderData['extension_attributes']['innosend_pickup_point'])) {
+            $pickupPoint = $orderData['extension_attributes']['innosend_pickup_point'];
+            return [
+                'pickup_point_id' => $pickupPoint['pickup_point_id'] ?? null,
+                'pickup_point_carrier' => $pickupPoint['courier_code'] ?? null,
+                'pickup_point_name' => $pickupPoint['pickup_point_name'] ?? null,
+                'pickup_point_address' => $pickupPoint['pickup_point_address'] ?? null,
+            ];
+        }
+
+        return null;
+    }
+
+    /**
      * Get pickup point data from database
      *
      * @param int $orderId
@@ -297,22 +319,28 @@ class CustomerOrderService
         $result = [];
         foreach ($orders as $order) {
             if ($this->isPickupPointOrder($order)) {
-                // Try to get pickup point data from database
-                $orderId = $order['entity_id'] ?? null;
-                if ($orderId) {
-                    $pickupPointData = $this->getPickupPointFromDatabase($orderId);
-                    if ($pickupPointData) {
-                        $order['pickup_point'] = [
-                            'id' => $pickupPointData['pickup_point_id'],
-                            'courier' => $pickupPointData['pickup_point_carrier'],
-                            'name' => $pickupPointData['pickup_point_name'],
-                            'address' => $pickupPointData['pickup_point_address'],
-                        ];
+                // First, try to get pickup point from extension attributes (if plugin is active on remote server)
+                $pickupPointData = $this->getPickupPointFromExtensionAttributes($order);
+                
+                // Fallback: try to get from local database (only works if same database)
+                if (!$pickupPointData) {
+                    $orderId = $order['entity_id'] ?? null;
+                    if ($orderId) {
+                        $pickupPointData = $this->getPickupPointFromDatabase($orderId);
+                    }
+                }
+                
+                if ($pickupPointData) {
+                    $order['pickup_point'] = [
+                        'id' => $pickupPointData['pickup_point_id'],
+                        'courier' => $pickupPointData['pickup_point_carrier'],
+                        'name' => $pickupPointData['pickup_point_name'],
+                        'address' => $pickupPointData['pickup_point_address'],
+                    ];
 
-                        // Add checkout_courier
-                        if (!empty($pickupPointData['pickup_point_carrier'])) {
-                            $order['checkout_courier'] = $pickupPointData['pickup_point_carrier'];
-                        }
+                    // Add checkout_courier
+                    if (!empty($pickupPointData['pickup_point_carrier'])) {
+                        $order['checkout_courier'] = $pickupPointData['pickup_point_carrier'];
                     }
                 }
 
@@ -352,20 +380,27 @@ class CustomerOrderService
 
         // Enrich with pickup point data if applicable
         if ($this->isPickupPointOrder($order)) {
-            $orderId = $order['entity_id'] ?? null;
-            if ($orderId) {
-                $pickupPointData = $this->getPickupPointFromDatabase($orderId);
-                if ($pickupPointData) {
-                    $order['pickup_point'] = [
-                        'id' => $pickupPointData['pickup_point_id'],
-                        'courier' => $pickupPointData['pickup_point_carrier'],
-                        'name' => $pickupPointData['pickup_point_name'],
-                        'address' => $pickupPointData['pickup_point_address'],
-                    ];
+            // First, try to get pickup point from extension attributes (if plugin is active on remote server)
+            $pickupPointData = $this->getPickupPointFromExtensionAttributes($order);
+            
+            // Fallback: try to get from local database (only works if same database)
+            if (!$pickupPointData) {
+                $orderId = $order['entity_id'] ?? null;
+                if ($orderId) {
+                    $pickupPointData = $this->getPickupPointFromDatabase($orderId);
+                }
+            }
+            
+            if ($pickupPointData) {
+                $order['pickup_point'] = [
+                    'id' => $pickupPointData['pickup_point_id'],
+                    'courier' => $pickupPointData['pickup_point_carrier'],
+                    'name' => $pickupPointData['pickup_point_name'],
+                    'address' => $pickupPointData['pickup_point_address'],
+                ];
 
-                    if (!empty($pickupPointData['pickup_point_carrier'])) {
-                        $order['checkout_courier'] = $pickupPointData['pickup_point_carrier'];
-                    }
+                if (!empty($pickupPointData['pickup_point_carrier'])) {
+                    $order['checkout_courier'] = $pickupPointData['pickup_point_carrier'];
                 }
             }
         }
