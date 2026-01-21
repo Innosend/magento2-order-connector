@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace Innosend\OrderConnector\Service;
 
 use Innosend\OrderConnector\Model\OrderMapper;
-use Innosend\PickupPoints\Helper\ShippingInformation;
-use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Client\Curl;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -19,6 +17,9 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Service to fetch orders from external Magento 2 API and combine with pickup point data
+ * 
+ * This service works with external Magento instances, so it only uses data from API responses.
+ * It does NOT access local databases - all data comes from the remote API.
  */
 class CustomerOrderService
 {
@@ -53,19 +54,9 @@ class CustomerOrderService
     private $logger;
 
     /**
-     * @var ResourceConnection
-     */
-    private $resourceConnection;
-
-    /**
      * @var OrderMapper
      */
     private $orderMapper;
-
-    /**
-     * @var ShippingInformation|null
-     */
-    private $shippingInformation;
 
     /**
      * @var string|null
@@ -76,24 +67,18 @@ class CustomerOrderService
      * @param Curl $curl
      * @param Json $json
      * @param LoggerInterface $logger
-     * @param ResourceConnection $resourceConnection
      * @param OrderMapper $orderMapper
-     * @param ShippingInformation|null $shippingInformation
      */
     public function __construct(
         Curl $curl,
         Json $json,
         LoggerInterface $logger,
-        ResourceConnection $resourceConnection,
-        OrderMapper $orderMapper,
-        ?ShippingInformation $shippingInformation = null
+        OrderMapper $orderMapper
     ) {
         $this->curl = $curl;
         $this->json = $json;
         $this->logger = $logger;
-        $this->resourceConnection = $resourceConnection;
         $this->orderMapper = $orderMapper;
-        $this->shippingInformation = $shippingInformation;
     }
 
     /**
@@ -232,6 +217,9 @@ class CustomerOrderService
 
     /**
      * Get pickup point data from extension attributes in API response
+     * 
+     * This service is used to fetch orders from external Magento instances,
+     * so we can only use data from the API response, not local database.
      *
      * @param array $orderData
      * @return array|null
@@ -239,6 +227,7 @@ class CustomerOrderService
     private function getPickupPointFromExtensionAttributes(array $orderData): ?array
     {
         // Check if extension attributes contain pickup point data
+        // This requires OrderRepositoryPlugin to be active on the remote server
         if (isset($orderData['extension_attributes']['innosend_pickup_point'])) {
             $pickupPoint = $orderData['extension_attributes']['innosend_pickup_point'];
             return [
@@ -247,49 +236,6 @@ class CustomerOrderService
                 'pickup_point_name' => $pickupPoint['pickup_point_name'] ?? null,
                 'pickup_point_address' => $pickupPoint['pickup_point_address'] ?? null,
             ];
-        }
-
-        return null;
-    }
-
-    /**
-     * Get pickup point data from database
-     *
-     * @param int $orderId
-     * @return array|null
-     */
-    private function getPickupPointFromDatabase(int $orderId): ?array
-    {
-        if (!$this->shippingInformation) {
-            return null;
-        }
-
-        try {
-            $connection = $this->resourceConnection->getConnection();
-            $tableName = $this->resourceConnection->getTableName('fm_innosend_order');
-
-            if (!$connection->isTableExists($tableName)) {
-                return null;
-            }
-
-            $select = $connection->select()
-                ->from($tableName, 'shipping_information')
-                ->where('order_id = ?', $orderId);
-            $shippingInformationJson = $connection->fetchOne($select);
-
-            if ($shippingInformationJson) {
-                $shippingInfo = $this->shippingInformation->parseShippingInformation($shippingInformationJson);
-                $pickupPointData = $this->shippingInformation->extractPickupPoint($shippingInfo);
-
-                if ($pickupPointData) {
-                    return $pickupPointData;
-                }
-            }
-        } catch (\Exception $e) {
-            $this->logger->warning('Failed to get pickup point from database', [
-                'order_id' => $orderId,
-                'error' => $e->getMessage(),
-            ]);
         }
 
         return null;
@@ -316,19 +262,13 @@ class CustomerOrderService
         $orders = $response['items'] ?? [];
 
         // Filter and enrich orders with pickup point data
+        // Only use data from API response - this service works with external Magento instances
         $result = [];
         foreach ($orders as $order) {
             if ($this->isPickupPointOrder($order)) {
-                // First, try to get pickup point from extension attributes (if plugin is active on remote server)
+                // Get pickup point from extension attributes in API response
+                // Requires OrderRepositoryPlugin to be active on remote server
                 $pickupPointData = $this->getPickupPointFromExtensionAttributes($order);
-                
-                // Fallback: try to get from local database (only works if same database)
-                if (!$pickupPointData) {
-                    $orderId = $order['entity_id'] ?? null;
-                    if ($orderId) {
-                        $pickupPointData = $this->getPickupPointFromDatabase($orderId);
-                    }
-                }
                 
                 if ($pickupPointData) {
                     $order['pickup_point'] = [
@@ -379,17 +319,11 @@ class CustomerOrderService
         $order = $orders[0];
 
         // Enrich with pickup point data if applicable
+        // Only use data from API response - this service works with external Magento instances
         if ($this->isPickupPointOrder($order)) {
-            // First, try to get pickup point from extension attributes (if plugin is active on remote server)
+            // Get pickup point from extension attributes in API response
+            // Requires OrderRepositoryPlugin to be active on remote server
             $pickupPointData = $this->getPickupPointFromExtensionAttributes($order);
-            
-            // Fallback: try to get from local database (only works if same database)
-            if (!$pickupPointData) {
-                $orderId = $order['entity_id'] ?? null;
-                if ($orderId) {
-                    $pickupPointData = $this->getPickupPointFromDatabase($orderId);
-                }
-            }
             
             if ($pickupPointData) {
                 $order['pickup_point'] = [
