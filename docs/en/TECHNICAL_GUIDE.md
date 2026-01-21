@@ -70,7 +70,7 @@ Failed syncs are logged with:
 
 ## Requirements
 
-- Innosend_Base module
+- Innosend_Integration module
 - Magento 2.4.x
 - PHP 7.3 - 8.3
 

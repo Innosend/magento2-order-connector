@@ -64,7 +64,7 @@ php bin/magento cron:run
 
 ### Orders Not Syncing
 
-- Verify API configuration in Base module
+- Verify API configuration in Integration module
 - Check "Enable Order Sync" is enabled
 - Verify cron is running
 - Check logs for error messages
