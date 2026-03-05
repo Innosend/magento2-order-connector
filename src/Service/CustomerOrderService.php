@@ -235,6 +235,9 @@ class CustomerOrderService
                 'pickup_point_carrier' => $pickupPoint['courier_code'] ?? null,
                 'pickup_point_name' => $pickupPoint['pickup_point_name'] ?? null,
                 'pickup_point_address' => $pickupPoint['pickup_point_address'] ?? null,
+                'pickup_point_street' => $pickupPoint['pickup_point_street'] ?? null,
+                'pickup_point_zipcode' => $pickupPoint['pickup_point_zipcode'] ?? null,
+                'pickup_point_city' => $pickupPoint['pickup_point_city'] ?? null,
             ];
         }
 
@@ -276,6 +279,9 @@ class CustomerOrderService
                         'courier' => $pickupPointData['pickup_point_carrier'],
                         'name' => $pickupPointData['pickup_point_name'],
                         'address' => $pickupPointData['pickup_point_address'],
+                        'pickup_point_street' => $pickupPointData['pickup_point_street'] ?? null,
+                        'pickup_point_zipcode' => $pickupPointData['pickup_point_zipcode'] ?? null,
+                        'pickup_point_city' => $pickupPointData['pickup_point_city'] ?? null,
                     ];
 
                     // Add checkout_courier
@@ -331,6 +337,9 @@ class CustomerOrderService
                     'courier' => $pickupPointData['pickup_point_carrier'],
                     'name' => $pickupPointData['pickup_point_name'],
                     'address' => $pickupPointData['pickup_point_address'],
+                    'pickup_point_street' => $pickupPointData['pickup_point_street'] ?? null,
+                    'pickup_point_zipcode' => $pickupPointData['pickup_point_zipcode'] ?? null,
+                    'pickup_point_city' => $pickupPointData['pickup_point_city'] ?? null,
                 ];
 
                 if (!empty($pickupPointData['pickup_point_carrier'])) {

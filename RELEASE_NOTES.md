@@ -1,6 +1,21 @@
-# Release Notes - Innosend Order Connector Module v1.0.3
+# Release Notes - Innosend Order Connector Module
 
-## Overview
+## Version 1.1.1 (2026-03-05)
+
+### Summary
+- Version 1.1.1 with exact dependency on `innosend/magento2-integration` 1.1.1.
+- New CLI command: `innosend:test:order-with-pickup-point <order_id> [--attach]` to attach sample pickup point to an order and view connector output.
+
+### Installation (1.1.1)
+```bash
+composer require innosend/magento2-order-connector:1.1.1
+```
+
+---
+
+## Version 1.0.3
+
+### Overview
 The Innosend Order Connector module automatically synchronizes orders with the Innosend platform. It handles order creation, status updates, and tracking information synchronization.
 
 ## Version 1.0.3

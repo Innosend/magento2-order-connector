@@ -24,6 +24,7 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="innosend_test_order_mapper" xsi:type="object">Innosend\OrderConnector\Console\Command\TestOrderMapper</item>
+                <item name="innosend_test_order_with_pickup_point" xsi:type="object">Innosend\OrderConnector\Console\Command\TestOrderWithPickupPoint</item>
             </argument>
         </arguments>
     </type>

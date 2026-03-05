@@ -148,6 +148,9 @@ class OrderRepositoryPlugin
                     $pickupPoint->setCourierCode($pickupPointData['pickup_point_carrier'] ?? null);
                     $pickupPoint->setPickupPointName($pickupPointData['pickup_point_name'] ?? null);
                     $pickupPoint->setPickupPointAddress($pickupPointData['pickup_point_address'] ?? null);
+                    $pickupPoint->setPickupPointStreet($pickupPointData['pickup_point_street'] ?? null);
+                    $pickupPoint->setPickupPointZipcode($pickupPointData['pickup_point_zipcode'] ?? null);
+                    $pickupPoint->setPickupPointCity($pickupPointData['pickup_point_city'] ?? null);
 
                     // Set extension attributes
                     if (!$extensionAttributes) {

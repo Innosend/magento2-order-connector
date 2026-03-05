@@ -81,7 +81,7 @@ class OrderMapper
             'payment_method' => $order->getPayment() ? $order->getPayment()->getMethod() : null,
         ];
 
-        // Add pickup point if available
+        // Add pickup point if available (separate street, zipcode, city for Innosend API)
         $pickupPointData = $this->getPickupPointData($order);
         if ($pickupPointData) {
             $orderData['pickup_point'] = [
@@ -89,6 +89,9 @@ class OrderMapper
                 'courier' => $pickupPointData['pickup_point_carrier'] ?? null,
                 'name' => $pickupPointData['pickup_point_name'] ?? null,
                 'address' => $pickupPointData['pickup_point_address'] ?? null,
+                'pickup_point_street' => $pickupPointData['pickup_point_street'] ?? null,
+                'pickup_point_zipcode' => $pickupPointData['pickup_point_zipcode'] ?? null,
+                'pickup_point_city' => $pickupPointData['pickup_point_city'] ?? null,
             ];
 
             // Set checkout_courier when pickup point is available
@@ -117,6 +120,12 @@ class OrderMapper
                 'pickup_point_carrier' => $pickupPoint->getCourierCode(),
                 'pickup_point_name' => $pickupPoint->getPickupPointName(),
                 'pickup_point_address' => $pickupPoint->getPickupPointAddress(),
+                'pickup_point_street' => method_exists($pickupPoint, 'getPickupPointStreet')
+                    ? $pickupPoint->getPickupPointStreet() : null,
+                'pickup_point_zipcode' => method_exists($pickupPoint, 'getPickupPointZipcode')
+                    ? $pickupPoint->getPickupPointZipcode() : null,
+                'pickup_point_city' => method_exists($pickupPoint, 'getPickupPointCity')
+                    ? $pickupPoint->getPickupPointCity() : null,
             ];
         }
 
