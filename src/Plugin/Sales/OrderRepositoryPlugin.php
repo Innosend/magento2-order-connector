@@ -142,7 +142,7 @@ class OrderRepositoryPlugin
                 $pickupPointData = $this->shippingInformation->extractPickupPoint($shippingInfo);
 
                 if ($pickupPointData) {
-                    // Create pickup point object
+                    // Create pickup point object (OrderConnector preference provides extended model with street/zipcode/city)
                     $pickupPoint = $this->pickupPointFactory->create();
                     $pickupPoint->setPickupPointId($pickupPointData['pickup_point_id'] ?? null);
                     $pickupPoint->setCourierCode($pickupPointData['pickup_point_carrier'] ?? null);

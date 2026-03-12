@@ -7,6 +7,10 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Extended pickup point with street/zipcode/city so OrderRepositoryPlugin can set all fields -->
+    <preference for="Innosend\PickupPoints\Api\Data\OrderPickupPointInterface"
+                type="Innosend\OrderConnector\Model\Order\PickupPoint"/>
+
     <!-- OrderMapper: ShippingInformation is optional (null default) -->
     <!-- It will be injected by Innosend_PickupPoints module di.xml if that module is enabled -->
     <!-- No need to configure it here - the null default in constructor will be used -->
