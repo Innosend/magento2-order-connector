@@ -112,14 +112,9 @@ class OrderRepositoryPlugin
             return;
         }
 
-        // Check if extension attributes already have pickup point data
         $extensionAttributes = $order->getExtensionAttributes();
-        if ($extensionAttributes && $extensionAttributes->getInnosendPickupPoint()) {
-            // Already loaded, skip
-            return;
-        }
 
-        // Try to load from database
+        // Always load from database so we can apply street/zipcode/city (and fallback parsing for legacy data)
         if (!$order->getId()) {
             return;
         }
@@ -142,15 +137,27 @@ class OrderRepositoryPlugin
                 $pickupPointData = $this->shippingInformation->extractPickupPoint($shippingInfo);
 
                 if ($pickupPointData) {
+                    // For existing orders: if street/zipcode/city are missing, derive from address (e.g. "Street, Postcode, City")
+                    $address = $pickupPointData['pickup_point_address'] ?? null;
+                    $street = $pickupPointData['pickup_point_street'] ?? null;
+                    $zipcode = $pickupPointData['pickup_point_zipcode'] ?? null;
+                    $city = $pickupPointData['pickup_point_city'] ?? null;
+                    if ($address && ($street === null || $zipcode === null || $city === null)) {
+                        $parsed = $this->parseAddressIntoStreetZipcodeCity($address);
+                        $street = $street ?? $parsed['street'];
+                        $zipcode = $zipcode ?? $parsed['zipcode'];
+                        $city = $city ?? $parsed['city'];
+                    }
+
                     // Create pickup point object (OrderConnector preference provides extended model with street/zipcode/city)
                     $pickupPoint = $this->pickupPointFactory->create();
                     $pickupPoint->setPickupPointId($pickupPointData['pickup_point_id'] ?? null);
                     $pickupPoint->setCourierCode($pickupPointData['pickup_point_carrier'] ?? null);
                     $pickupPoint->setPickupPointName($pickupPointData['pickup_point_name'] ?? null);
                     $pickupPoint->setPickupPointAddress($pickupPointData['pickup_point_address'] ?? null);
-                    $pickupPoint->setPickupPointStreet($pickupPointData['pickup_point_street'] ?? null);
-                    $pickupPoint->setPickupPointZipcode($pickupPointData['pickup_point_zipcode'] ?? null);
-                    $pickupPoint->setPickupPointCity($pickupPointData['pickup_point_city'] ?? null);
+                    $pickupPoint->setPickupPointStreet($street);
+                    $pickupPoint->setPickupPointZipcode($zipcode);
+                    $pickupPoint->setPickupPointCity($city);
 
                     // Set extension attributes
                     if (!$extensionAttributes) {
@@ -168,5 +175,42 @@ class OrderRepositoryPlugin
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Parse combined address string into street, zipcode, city (for legacy orders without separate fields).
+     * Expected format: "Street, Postcode, City" e.g. "Barndesteeg 9-C, 1012BV, AMSTERDAM"
+     *
+     * @param string $address
+     * @return array{street: string|null, zipcode: string|null, city: string|null}
+     */
+    private function parseAddressIntoStreetZipcodeCity(string $address): array
+    {
+        $result = ['street' => null, 'zipcode' => null, 'city' => null];
+        $address = trim($address);
+        if ($address === '') {
+            return $result;
+        }
+
+        $parts = array_map('trim', explode(',', $address));
+        if (count($parts) >= 3) {
+            $result['street'] = $parts[0] !== '' ? $parts[0] : null;
+            $result['zipcode'] = $parts[1] !== '' ? $parts[1] : null;
+            $result['city'] = $parts[2] !== '' ? $parts[2] : null;
+        } elseif (count($parts) === 2) {
+            $result['street'] = $parts[0] !== '' ? $parts[0] : null;
+            // Second part could be "Postcode City" or just city
+            $second = $parts[1];
+            if (preg_match('/^([A-Z0-9\s\-]+)\s+([A-Za-z\s]+)$/u', $second, $m)) {
+                $result['zipcode'] = trim($m[1]);
+                $result['city'] = trim($m[2]);
+            } else {
+                $result['city'] = $second !== '' ? $second : null;
+            }
+        } else {
+            $result['street'] = $address;
+        }
+
+        return $result;
     }
 }

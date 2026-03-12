@@ -42,9 +42,9 @@ class PickupPoint extends PickupPointBase
 
     /**
      * @param string|null $street
-     * @return self
+     * @return \Innosend\PickupPoints\Api\Data\OrderPickupPointInterface
      */
-    public function setPickupPointStreet(?string $street): self
+    public function setPickupPointStreet(?string $street): \Innosend\PickupPoints\Api\Data\OrderPickupPointInterface
     {
         $this->pickupPointStreet = $street;
         return $this;
@@ -60,9 +60,9 @@ class PickupPoint extends PickupPointBase
 
     /**
      * @param string|null $zipcode
-     * @return self
+     * @return \Innosend\PickupPoints\Api\Data\OrderPickupPointInterface
      */
-    public function setPickupPointZipcode(?string $zipcode): self
+    public function setPickupPointZipcode(?string $zipcode): \Innosend\PickupPoints\Api\Data\OrderPickupPointInterface
     {
         $this->pickupPointZipcode = $zipcode;
         return $this;
@@ -78,9 +78,9 @@ class PickupPoint extends PickupPointBase
 
     /**
      * @param string|null $city
-     * @return self
+     * @return \Innosend\PickupPoints\Api\Data\OrderPickupPointInterface
      */
-    public function setPickupPointCity(?string $city): self
+    public function setPickupPointCity(?string $city): \Innosend\PickupPoints\Api\Data\OrderPickupPointInterface
     {
         $this->pickupPointCity = $city;
         return $this;
