@@ -21,7 +21,7 @@
         "magento/module-sales": ">=102.0.0",
         "magento/module-store": ">=101.0.0",
         "innosend/magento2-integration": "1.1.3",
-        "innosend/magento2-pickup-points": "^1.3"
+        "innosend/magento2-pickup-points": "1.1.3"
     },
     "autoload": {
         "files": [
