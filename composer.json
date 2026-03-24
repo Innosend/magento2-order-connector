@@ -30,13 +30,5 @@
         "psr-4": {
             "Innosend\\OrderConnector\\": "src/"
         }
-    },
-    "extra": {
-        "map": [
-            [
-                "*",
-                "Innosend/OrderConnector"
-            ]
-        ]
     }
 }
