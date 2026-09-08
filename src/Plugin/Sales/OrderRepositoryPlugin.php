@@ -52,8 +52,8 @@ class OrderRepositoryPlugin
     public function __construct(
         ResourceConnection $resourceConnection,
         LoggerInterface $logger,
-        \Innosend\PickupPoints\Api\Data\OrderPickupPointInterfaceFactory $pickupPointFactory = null,
-        \Innosend\PickupPoints\Helper\ShippingInformation $shippingInformation = null
+        ?\Innosend\PickupPoints\Api\Data\OrderPickupPointInterfaceFactory $pickupPointFactory = null,
+        ?\Innosend\PickupPoints\Helper\ShippingInformation $shippingInformation = null
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;
