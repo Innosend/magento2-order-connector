@@ -42,7 +42,7 @@ class OrderMapper
     public function __construct(
         ResourceConnection $resourceConnection,
         LoggerInterface $logger,
-        ShippingInformation $shippingInformation = null
+        ?ShippingInformation $shippingInformation = null
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;
