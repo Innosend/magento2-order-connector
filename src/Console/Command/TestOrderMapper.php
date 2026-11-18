@@ -65,7 +65,7 @@ class TestOrderMapper extends Command
     /**
      * Configure command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('innosend:test:order-mapper')
             ->setDescription('Test OrderMapper with pickup point data')
@@ -79,7 +79,7 @@ class TestOrderMapper extends Command
      * @param OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
