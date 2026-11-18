@@ -1,5 +1,18 @@
 # Release Notes - Innosend Order Connector Module
 
+## Version 1.3.1 (2026-11-18)
+
+### Summary
+- PHP 8.4+ compatibility fix: `TestOrderMapper::execute()` now has the `: int` return type required by Symfony Console.
+- Removed PHP 8.4 implicit-nullable deprecation in `OrderMapper`.
+
+### Installation (1.3.1)
+```bash
+composer require innosend/magento2-order-connector:1.3.1
+```
+
+---
+
 ## Version 1.1.1 (2026-03-05)
 
 ### Summary
